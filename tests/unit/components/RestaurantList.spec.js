@@ -3,35 +3,22 @@ import { mount, createLocalVue } from '@vue/test-utils';
 import RestaurantList from '@/components/RestaurantList';
 
 describe('RestaurantList', () => {
+  const findByTestId = (wrapper, testId, index) =>
+    wrapper.findAll(`[data-testid="${testId}"]`).at(index);
+
+  const records = [
+    { id: 644, name: 'Pasta Place' },
+    { id: 645, name: 'Salad Place' },
+  ];
+
   const localVue = createLocalVue();
   localVue.use(Vuex);
 
-  it('loads restaurants on mount', () => {
-    const restaurantModule = {
-      namespaced: true,
-      actions: {
-        load: jest.fn().mockName('load'),
-      },
-    };
+  let restaurantModule;
+  let wrapper;
 
-    const store = new Vuex.Store({
-      modules: {
-        restaurants: restaurantModule,
-      },
-    });
-
-    mount(RestaurantList, { localVue, store });
-
-    expect(restaurantModule.actions.load).toHaveBeenCalled();
-  });
-
-  it('displays the restaurants', () => {
-    const records = [
-      { id: 644, name: 'Pasta Place' },
-      { id: 645, name: 'Salad Place' },
-    ];
-
-    const restaurantModule = {
+  beforeEach(() => {
+    restaurantModule = {
       namespaced: true,
       state: { records },
       actions: {
@@ -45,14 +32,15 @@ describe('RestaurantList', () => {
       },
     });
 
-    const wrapper = mount(RestaurantList, { localVue, store });
+    wrapper = mount(RestaurantList, { localVue, store });
+  });
 
-    const firstRestaurantName = wrapper.findAll('[data-testid="restaurant"]').at(0).text();
+  it('loads restaurants on mount', () => {
+    expect(restaurantModule.actions.load).toHaveBeenCalled();
+  });
 
-    expect(firstRestaurantName).toBe('Pasta Place');
-
-    const secondRestaurantName = wrapper.findAll('[data-testid="restaurant"]').at(1).text();
-
-    expect(secondRestaurantName).toBe('Salad Place');
+  it('displays the restaurants', () => {
+    expect(findByTestId(wrapper, 'restaurant', 0).text()).toBe('Pasta Place');
+    expect(findByTestId(wrapper, 'restaurant', 1).text()).toBe('Salad Place');
   });
 });
