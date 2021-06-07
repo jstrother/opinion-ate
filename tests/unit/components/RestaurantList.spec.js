@@ -62,5 +62,19 @@ describe('RestaurantList', () => {
     it('does not display the loading indicator while not loading', () => {
       expect(wrapper.find('[data-testid="loading-indicator"]').exists()).toBe(false);
     });
+
+    it('does not display the error message', () => {
+      expect(wrapper.find('[data-testid="loading-error"]').exists()).toBe(false);
+    });
+  });
+
+  describe('when loading fails', () => {
+    beforeEach(() => {
+      mountWithStore({ loadError: true });
+    });
+
+    it('displays the error message', () => {
+      expect(wrapper.find('[data-testid="loading-error"]').exists()).toBe(true);
+    });
   });
 });
