@@ -21,10 +21,10 @@ describe('RestaurantList', () => {
   let restaurantModule;
   let wrapper;
 
-  beforeEach(() => {
+  const mountWithStore = (state = { records, loading: false }) => {
     restaurantModule = {
       namespaced: true,
-      state: { records },
+      state,
       actions: {
         load: jest.fn().mockName('load'),
       },
@@ -37,14 +37,44 @@ describe('RestaurantList', () => {
     });
 
     wrapper = mount(RestaurantList, { localVue, store, vuetify });
-  });
+  };
 
   it('loads restaurants on mount', () => {
+    mountWithStore();
     expect(restaurantModule.actions.load).toHaveBeenCalled();
   });
 
-  it('displays the restaurants', () => {
-    expect(findByTestId(wrapper, 'restaurant', 0).text()).toBe('Pasta Place');
-    expect(findByTestId(wrapper, 'restaurant', 1).text()).toBe('Salad Place');
+  it('displays the loading indicator while loading', () => {
+    mountWithStore({ loading: true });
+    expect(wrapper.find('[data-testid="loading-indicator"]').exists()).toBe(true);
+  });
+
+  describe('when loading succeeds', () => {
+    beforeEach(() => {
+      mountWithStore();
+    });
+
+    it('displays the restaurants', () => {
+      expect(findByTestId(wrapper, 'restaurant', 0).text()).toBe('Pasta Place');
+      expect(findByTestId(wrapper, 'restaurant', 1).text()).toBe('Salad Place');
+    });
+
+    it('does not display the loading indicator while not loading', () => {
+      expect(wrapper.find('[data-testid="loading-indicator"]').exists()).toBe(false);
+    });
+
+    it('does not display the error message', () => {
+      expect(wrapper.find('[data-testid="loading-error"]').exists()).toBe(false);
+    });
+  });
+
+  describe('when loading fails', () => {
+    beforeEach(() => {
+      mountWithStore({ loadError: true });
+    });
+
+    it('displays the error message', () => {
+      expect(wrapper.find('[data-testid="loading-error"]').exists()).toBe(true);
+    });
   });
 });
