@@ -1,5 +1,5 @@
 describe('Creating a Restaurant', () => {
-  it('allows adding a restaurant', () => {
+  it('allows adding restaurants', () => {
     const restaurantId = 27;
     const restaurantName = 'Sushi Place';
 
