@@ -6,21 +6,28 @@
     <v-alert v-if="serverError" type="error" data-testid="new-restaurant-server-error">
       The restaurant could not be saved. Please try again.
     </v-alert>
-    <v-text-field
-      placeholder="Add Restaurant"
-      filled
-      type="text"
-      v-model="name"
-      data-testid="new-restaurant-name-field"
-    />
-    <v-btn
-      type="submit"
-      color="primary"
-      class="black--text"
-      data-testid="new-restaurant-submit-button"
-    >
-      Add
-    </v-btn>
+    <v-row>
+      <v-col cols="9">
+        <v-text-field
+          placeholder="Add Restaurant"
+          filled
+          type="text"
+          v-model="name"
+          data-testid="new-restaurant-name-field"
+        />
+      </v-col>
+      <v-col cols="3">
+        <v-btn
+          type="submit"
+          color="primary"
+          class="black--text"
+          block
+          data-testid="new-restaurant-submit-button"
+        >
+          Add
+        </v-btn>
+      </v-col>
+    </v-row>
   </form>
 </template>
 
